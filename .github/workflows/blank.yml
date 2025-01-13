@@ -25,7 +25,7 @@ jobs:
     - uses: robotomize/notify-telegram@v0.1.0
       if: always()
       with:
-        chat: 4631069934 # user id or channel name secret
+        chat: -4631069934 # user id or channel name secret
         token: 7489931344:AAFNNglq5zbNtuHdWkgEP-IKi6T0ubUIKUY # token secret
         status: ${{ job.status }} # do not modify this line
         message: ${{ secrets.message }} # custom message

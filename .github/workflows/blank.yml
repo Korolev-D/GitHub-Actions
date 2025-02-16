@@ -1,9 +1,28 @@
-name: CI
-on: workflow_dispatch
+name: Telegram Notification (Workflow Dispatch)
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Выберите окружение для развертывания'
+        required: true
+        type: choice
+        options:
+          - staging
+          - production
+      additional_message:
+        description: 'Дополнительное сообщение (опционально)'
+        required: false
+        type: string
+
 jobs:
-  print:
+  send_telegram_notification:
     runs-on: ubuntu-latest
     steps:
-      - name: Run a one-line script
-        run: echo "${{ toJSON(github) }}"
- 
+      - name: Get Workflow Dispatch Information
+        id: dispatch_info
+        run: |
+          echo "DISPATCH_USER=${GITHUB_ACTOR}" >> $GITHUB_OUTPUT
+          echo "REPOSITORY_NAME=${GITHUB_REPOSITORY}" >> $GITHUB_OUTPUT
+          echo "ENVIRONMENT=${{ github.event.inputs.environment }}" >> $GITHUB_OUTPUT
+          echo "ADDITIONAL_MESSAGE=${{ github.event.inputs.additional_message }}" >> $GITHUB_OUTPUT

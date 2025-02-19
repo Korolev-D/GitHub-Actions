@@ -1,28 +1,29 @@
-name: Telegram Notification (Workflow Dispatch)
+name: Telegram Notification
 
 on:
-  workflow_dispatch:
-    inputs:
-      environment:
-        description: 'Выберите окружение для развертывания'
-        required: true
-        type: choice
-        options:
-          - staging
-          - production
-      additional_message:
-        description: 'Дополнительное сообщение (опционально)'
-        required: false
-        type: string
-
+  pull_request:
+    types: [opened]
+    branches: ['master']
+    
 jobs:
-  send_telegram_notification:
+  send-telegram-notification:
     runs-on: ubuntu-latest
     steps:
-      - name: Get Workflow Dispatch Information
-        id: dispatch_info
-        run: |
-          echo "DISPATCH_USER=${GITHUB_ACTOR}" >> $GITHUB_OUTPUT
-          echo "REPOSITORY_NAME=${GITHUB_REPOSITORY}" >> $GITHUB_OUTPUT
-          echo "ENVIRONMENT=${{ github.event.inputs.environment }}" >> $GITHUB_OUTPUT
-          echo "ADDITIONAL_MESSAGE=${{ github.event.inputs.additional_message }}" >> $GITHUB_OUTPUT
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Send Telegram Message
+        uses: cbrgm/telegram-github-action@v1
+        with:
+          token: 6571428152:AAH6kodoBUdipPuq0wOtLKL1iLayE4qTiNA
+          to: -4255555113
+          message: |
+            🎉 New Pull Request opened by ${{ github.actor }}! 🎉
+
+            **Branch:** ${{ github.head_ref }}
+
+            **Commit Message:** ${{ github.event.pull_request.title }}
+
+            **Repository:** ${{ github.repository }}
+
+            **View Pull Request:** ${{ github.event.pull_request.html_url }}

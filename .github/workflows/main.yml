@@ -1,0 +1,29 @@
+name: Telegram Notification
+
+on:
+  pull_request:
+    types: [opened]
+    branches: ['master', 'dev']
+    
+jobs:
+  send-telegram-notification:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Send Telegram Message
+        uses: cbrgm/telegram-github-action@v1
+        with:
+          token: 6571428152:AAH6kodoBUdipPuq0wOtLKL1iLayE4qTiNA
+          to: -4255555113
+          message: |
+            🎉 New Pull Request opened by ${{ github.actor }}! 🎉
+
+            **Branch:** ${{ github.head_ref }}
+
+            **Commit Message:** ${{ github.event.pull_request.title }}
+
+            **Repository:** ${{ github.repository }}
+
+            **View Pull Request:** ${{ github.event.pull_request.html_url }}

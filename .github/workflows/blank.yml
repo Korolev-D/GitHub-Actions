@@ -2,7 +2,7 @@ on:
   pull_request:
     types: [opened]
     branches: ['master', 'dev']
-    
+
 jobs:
   send-telegram-notification:
     runs-on: ubuntu-latest
@@ -13,8 +13,8 @@ jobs:
       - name: Send Telegram Message
         uses: cbrgm/telegram-github-action@v1
         with:
-          token: 6571428152:AAH6kodoBUdipPuq0wOtLKL1iLayE4qTiNA
-          to: -4255555113
+          token: ${{ secrets.TELEGRAM_BOT_TOKEN }}  # Секрет для токена
+          to: ${{ secrets.TELEGRAM_CHAT_ID }}       # Секрет для ID чата
           message: |
             🎉 New Pull Request opened by ${{ github.actor }}! 🎉
 

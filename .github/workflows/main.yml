@@ -1,4 +1,4 @@
-name: Telegram Notification on Pull Request
+name: Send Telegram Notification on PR Open
 
 on:
   pull_request:
@@ -23,5 +23,4 @@ jobs:
             **Author:** ${{ github.actor }}
             **Branch:** ${{ github.head_ref }}
             **Commit Message:** ${{ github.event.pull_request.title }}
-            **Repository:** ${{ github.repository }}
             **View Pull Request:** ${{ github.event.pull_request.html_url }}

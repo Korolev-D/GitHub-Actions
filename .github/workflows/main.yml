@@ -1,0 +1,7 @@
+on: workflow_dispatch
+jobs:
+  print-secrets:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print Telegram Secrets
+        run: echo "Telegram Bot Token"

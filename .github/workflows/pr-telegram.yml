@@ -1,0 +1,77 @@
+on:
+  pull_request:
+    types: [opened, closed]
+    branches: ['master', 'dev']
+  pull_request_review:
+    types: [submitted]
+
+jobs:
+  new-pr:
+    runs-on: ubuntu-latest
+    if: github.event.action == 'opened'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Send Telegram Message
+        uses: cbrgm/telegram-github-action@v1
+        with:
+          token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          to: ${{ secrets.TELEGRAM_CHAT_ID }}
+          message: |
+            🚀 Новый Pull Request: ${{ github.event.pull_request.title }} 
+
+            **Branch:** ${{ github.head_ref }}
+            **Author:** ${{ github.actor }}
+            **View Pull Request:** ${{ github.event.pull_request.html_url }}
+
+  review-commented:
+    runs-on: ubuntu-latest
+    if: github.event.review.state == 'changes_requested' || github.event.review.state == 'commented'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Send Telegram Message for Review
+        uses: cbrgm/telegram-github-action@v1
+        with:
+          token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          to: ${{ secrets.TELEGRAM_CHAT_ID }}
+          message: |
+            📢 Pull Request требует доработки: ${{ github.event.pull_request.title }}
+
+            **View Pull Request:** ${{ github.event.pull_request.html_url }}
+
+  review-aproved:
+    runs-on: ubuntu-latest
+    if: github.event.review.state == 'aproved'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Send Telegram Message for Review
+        uses: cbrgm/telegram-github-action@v1
+        with:
+          token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          to: ${{ secrets.TELEGRAM_CHAT_ID }}
+          message: |
+            🔭 Pull Request проверен и ожидает тестирования: ${{ github.event.pull_request.title }}
+
+            **View Pull Request:** ${{ github.event.pull_request.html_url }}
+
+  handle-pr-merge:
+    runs-on: ubuntu-latest
+    if: github.event.action == 'closed' && github.event.pull_request.merged
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Send Telegram Message for Merge
+        uses: cbrgm/telegram-github-action@v1
+        with:
+          token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          to: ${{ secrets.TELEGRAM_CHAT_ID }}
+          message: |
+            🎉 Pull Request слит в ветку dev: ${{ github.event.pull_request.title }}
+
+            **View Pull Request:** ${{ github.event.pull_request.html_url }}
